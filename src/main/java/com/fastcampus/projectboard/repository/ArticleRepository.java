@@ -4,6 +4,8 @@ import com.fastcampus.projectboard.domain.Article;
 import com.fastcampus.projectboard.domain.QArticle;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -13,9 +15,11 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface ArticleRepository extends
         JpaRepository<Article, Long>,
-        QuerydslPredicateExecutor<Article>, // Entity 안에 있는 필드들의 기본 검색 기능을 제공(Exact 검색만 됨)
-        QuerydslBinderCustomizer<QArticle> // 검색 기능을 커스터마이징하게 해 줌
-{
+        QuerydslPredicateExecutor<Article>,
+        QuerydslBinderCustomizer<QArticle> {
+
+    Page<Article> findByTitle(String title, Pageable pageable);
+
     @Override
     default void customize(QuerydslBindings bindings, QArticle root) {
         bindings.excludeUnlistedProperties(true);
